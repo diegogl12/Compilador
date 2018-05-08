@@ -1,0 +1,24 @@
+var
+	x120: real;
+begin
+	{Esta parte é para ignorar{
+	x=10;
+	]][[[]}
+	read (x120);
+	if x120 > 100.002 then
+	var 
+		aux: integer;	
+	begin
+		
+		aux := 1;
+		write(aux);
+	end
+	else
+		
+		var
+		aux: integer;
+	begin
+		aux := 0;
+		write (aux);
+	end;
+end.

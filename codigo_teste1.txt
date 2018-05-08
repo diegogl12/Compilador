@@ -1,0 +1,16 @@
+const
+	n=2;
+var
+	y: integer;
+
+begin
+	
+	read(x20);
+	y:=1;
+	for i=1 to x20 do
+	begin
+		y:= y*n;
+	end;
+
+	write(y);
+end.
