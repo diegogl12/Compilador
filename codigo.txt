@@ -1,4 +1,4 @@
-begin
+﻿begin
 
 	if a > b then
 	begin
@@ -11,6 +11,6 @@ begin
 	else
 	begin
 		write(b);
-	end
+	end;
 end.
 {a := b;}
