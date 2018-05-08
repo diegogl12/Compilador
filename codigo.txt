@@ -6,11 +6,11 @@ begin
 		begin
 			write(a);
 		end;
-		{não tem else}
+		{nÃ£o tem else}
 	end
 	else
 	begin
 		write(b);
-	end;
+	end
 end.
 {a := b;}
