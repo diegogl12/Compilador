@@ -1,16 +1,14 @@
-﻿begin
-
-	if a > b then
+begin
+	if a > c then
 	begin
 		if a > c then
 		begin
 			write(a);
 		end;
-		{não tem else}
+		{n�o tem else}
 	end
 	else
 	begin
 		write(b);
 	end;
 end.
-{a := b;}

@@ -60,7 +60,7 @@ int contador_linha=1;
 bool teste_erro = false;
 
 void next_token();
-void reconhece(int tk);
+int reconhece(int tk);
 void erro(int sinal);
 
 void program();
@@ -120,16 +120,20 @@ void program()
 
 void constantes()
 {
+    int fail = 0;
     if(token == tk_const)
     {
-        reconhece(tk_const);
-        lista_de_const();
+        fail = reconhece(tk_const);
+        if(!fail)
+            lista_de_const();
     }
 
     else if(token == tk_var || token == tk_begin);
-
+            fail = reconhece(token);
+            if(!fail)
     else
         erro(ERRO_sintatico);
+        fail = 1;
 }
 
 void lista_de_const()
@@ -281,10 +285,8 @@ void bloco()
 {
     if(token == tk_begin)
     {
-        reconhece(tk_begin);
         variaveis();
         comandos();
-        reconhece(tk_end);
     }
 
     else
@@ -704,12 +706,19 @@ void next_token()
     }
 }
 
-void reconhece(int tk)
+int reconhece(int tk)
 {
     if(token!=tk)
+    {
         erro(ERRO_sintatico);
+        return 1;
+    }
 
-    next_token();
+    else
+    {
+        next_token();
+        return 0;
+    }
 }
 
 void erro(int sinal)
