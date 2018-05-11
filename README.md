@@ -1,2 +1,2 @@
-Trabalho refente a matÈria de compiladores. Onde o  objetivo È se baseando na gram·tica dada (Gram·tica.pdf), 
-contruir um compilador para a mesma.
+Trabalho refente a mat√©ria de compiladores. Onde o  objetivo √© se basear na gram√°tica dada (Gram√°tica.pdf), 
+e construir um compilador para a mesma.
