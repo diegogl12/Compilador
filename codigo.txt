@@ -1,6 +1,6 @@
 ﻿begin
 
-	if a > b then
+	if a > b then {teste Diego top}
 	begin
 		if a > c then
 		begin
