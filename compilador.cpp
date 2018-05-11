@@ -46,6 +46,8 @@
 
 #define MAXreservadas 15
 
+///teste foi
+
 using namespace std;
 
 FILE *arquivo;
