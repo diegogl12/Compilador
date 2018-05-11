@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-﻿begin
+begin
 
 	if a > b then {teste Diego top}
-=======
 begin
 	if a > c then
->>>>>>> 1cd87847844394df0e36edc9d5d0f73c314f5ffc
 	begin
 		if a > c then
 		begin
