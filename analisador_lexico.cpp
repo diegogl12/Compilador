@@ -124,11 +124,10 @@ void program()
     }
 
     if (fail)
-        {
+    {
 
-        while(token != tk_EOF){
+        while(token != tk_EOF)
             next_token();
-        }
     }
 }
 
