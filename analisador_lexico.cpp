@@ -119,6 +119,7 @@ void program()
 }
 
 void constantes()
+ //nayara aqui
 {
     int fail = 0;
     if(token == tk_const)
