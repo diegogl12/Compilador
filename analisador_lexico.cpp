@@ -92,7 +92,7 @@ void lista_arg2();
 
 int main()
 {
-    arquivo = fopen("codigo.txt","r");
+    arquivo = fopen("codigo2.txt","r");
 
     next_token();
     program();
@@ -106,16 +106,30 @@ int main()
 
 void program()
 {
+    int fail = 0;
     if(token == tk_const || token == tk_var || token == tk_begin)
     {
         constantes();
         variaveis();
         bloco();
-        reconhece(tk_ponto);
-        reconhece(tk_EOF);
+        fail = reconhece(tk_ponto);
+        if(!fail)
+            reconhece(tk_EOF);
     }
-    else
+
+    if (token != tk_EOF )
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail)
+        {
+
+        while(token != tk_EOF){
+            next_token();
+        }
+    }
 }
 
 void constantes()
@@ -124,16 +138,25 @@ void constantes()
     if(token == tk_const)
     {
         fail = reconhece(tk_const);
+
         if(!fail)
             lista_de_const();
     }
 
     else if(token == tk_var || token == tk_begin);
-            fail = reconhece(token);
-            if(!fail)
-    else
+
+    if (token != tk_var && token != tk_begin)
+    {
         erro(ERRO_sintatico);
         fail = 1;
+    }
+
+    if (fail){
+
+        while(token != tk_var && token != tk_begin && token != tk_EOF){
+            next_token();
+        }
+    }
 }
 
 void lista_de_const()
@@ -590,7 +613,7 @@ void next_token()
             }
         }
 
-        else if((sinal==1 && auxiliar[0] >= 'a' && auxiliar[0] <= 'z') )///TESTE RESERVADAS E VARIÁVEIS
+        else if((sinal==1 && auxiliar[0] >= 'a' && auxiliar[0] <= 'z') )///TESTE RESERVADAS E VARIÃVEIS
         {
             if(!((auxiliar[auxiliar.size()-1] >= '0' && auxiliar[auxiliar.size() - 1] <= '9') || (auxiliar[auxiliar.size() - 1] >= 'a' && auxiliar[auxiliar.size() - 1] <= 'z') ))
             {
