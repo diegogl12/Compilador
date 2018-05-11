@@ -46,7 +46,6 @@
 
 #define MAXreservadas 15
 
-
 using namespace std;
 
 FILE *arquivo;
@@ -465,28 +464,42 @@ void termo2()
 
 void fator()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
-        reconhece(tk_variavel);
+        fail = reconhece(tk_variavel);
 
     else if(token == tk_numero)
-        reconhece(tk_numero);
+        fail = reconhece(tk_numero);
 
     else if(token == tk_numeroreal)
-        reconhece(tk_numeroreal);
+        fail = reconhece(tk_numeroreal);
 
     else if(token == tk_abreparenteses)
     {
-        reconhece(tk_abreparenteses);
-        expressao();
-        reconhece(tk_fechaparenteses);
+        fail = reconhece(tk_abreparenteses);
+
+        if(!fail)
+            expressao();
+
+        fail = reconhece(tk_fechaparenteses);
     }
 
-    else
+    if(token != tk_vezes && token != tk_divisao && token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_vezes && token != tk_divisao && token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then && token != tk_EOF)
+            next_token();
 }
 
 void expr_relacional ()
 {
+    int fail = 0;
+
     if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token == tk_abreparenteses)
     {
         expressao();
@@ -494,58 +507,95 @@ void expr_relacional ()
         expressao();
     }
 
-    else
-         erro(ERRO_sintatico);
+    if(token != tk_then)
+    {
+        erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_then && token != tk_EOF)
+            next_token();
 }
 
 void op_rel()
 {
+    int fail = 0;
+
     if(token == tk_igual)
-        reconhece(tk_igual);
+        fail = reconhece(tk_igual);
 
     else if(token == tk_diferente)
-        reconhece(tk_diferente);
+        fail = reconhece(tk_diferente);
 
     else if(token == tk_menorque)
-        reconhece(tk_menorque);
+        fail = reconhece(tk_menorque);
 
     else if(token == tk_maiorque)
-        reconhece(tk_maiorque);
+        fail = reconhece(tk_maiorque);
 
     else if(token == tk_menorigual)
-        reconhece(tk_menorigual);
+        fail = reconhece(tk_menorigual);
 
     else if(token == tk_maiorigual)
-        reconhece(tk_maiorigual);
+        fail = reconhece(tk_maiorigual);
 
-    else
-         erro(ERRO_sintatico);
+    if(token != tk_variavel && token != tk_numero && token != tk_numeroreal)
+    {
+        erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_variavel && token != tk_numero && token != tk_numeroreal && token != tk_EOF)
+            next_token();
 }
 
 void lista_arg()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
-        reconhece(tk_variavel);
-        lista_arg2();
+        fail = reconhece(tk_variavel);
+
+        if(!fail)
+            lista_arg2();
     }
 
-    else
-         erro(ERRO_sintatico);
+    if(token != tk_fechaparenteses)
+    {
+        erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_fechaparenteses && token != tk_EOF)
+            next_token();
 }
 
 void lista_arg2()
 {
+    int fail = 0;
     if(token == tk_virgula)
     {
-        reconhece(tk_virgula);
-        lista_arg();
+        fail = reconhece(tk_virgula);
+
+        if(!fail)
+            lista_arg();
     }
 
     else if(token == tk_fechaparenteses);
 
-    else
+    if(token != tk_fechaparenteses)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_fechaparenteses && token != tk_EOF)
+            next_token();
 }
 
 
