@@ -397,39 +397,63 @@ void else_opc()
 
 void expressao()
 {
+    int fail = 0;
+
     if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token == tk_abreparenteses)
     {
        termo();
        expressao2();
     }
 
-    else
+    if(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then && token != tk_EOF)
+            next_token();
 }
 
 void expressao2()
 {
+    int fail = 0;
+
     if(token == tk_soma)
     {
-        reconhece(tk_soma);
-        expressao();
+        fail = reconhece(tk_soma);
+
+        if(!fail)
+            expressao();
     }
 
     else if(token == tk_subtracao)
     {
-        reconhece(tk_subtracao);
-        expressao();
+        fail = reconhece(tk_subtracao);
+
+        if(!fail)
+            expressao();
     }
 
     else if(token == tk_igual || token == tk_diferente || token == tk_menorque || token == tk_maiorque || token == tk_menorigual || token == tk_maiorigual || token == tk_fechaparenteses || token == tk_pontovirgula || token
              == tk_to || token == tk_do || token == tk_then);
 
-    else
+    if(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then && token != tk_EOF)
+            next_token();
 }
 
 void termo()
 {
+    int fail = 0;
+
     if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token
         == tk_abreparenteses)
     {
@@ -437,29 +461,51 @@ void termo()
         termo2();
     }
 
-    else
+    if(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then && token != tk_EOF)
+            next_token();
+
 }
 
 void termo2()
 {
+    int fail = 0;
+
     if(token == tk_soma || token == tk_subtracao || token == tk_igual || token == tk_diferente || token == tk_menorque || token == tk_maiorque || token == tk_menorigual || token == tk_maiorigual || token == tk_fechaparenteses || token == tk_pontovirgula || token
              == tk_to || token == tk_do || token == tk_then);
 
     else if(token == tk_vezes)
     {
-        reconhece(tk_vezes);
-        termo();
+        fail = reconhece(tk_vezes);
+
+        if(!fail)
+            termo();
     }
 
     else if(token == tk_divisao)
     {
-        reconhece(tk_divisao);
-        termo();
+        fail = reconhece(tk_divisao);
+
+        if(!fail)
+            termo();
     }
 
-    else
+    if(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then && token != tk_EOF)
+            next_token();
+
 }
 
 void fator()
