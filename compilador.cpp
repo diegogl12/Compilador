@@ -110,13 +110,9 @@ void program()
 
     if(token == tk_const || token == tk_var || token == tk_begin)
     {
-        printf("1\n");
         constantes();
-        printf("2\n");
         variaveis();
-        printf("3\n");
         bloco();
-        printf("4\n");
         fail = reconhece(tk_ponto);
 
         if(!fail)
@@ -216,8 +212,8 @@ void def_const()
         if(!fail)
             fail = reconhece(tk_igual);
 
-            if(!fail)
-                def_const2();
+        if(!fail)
+            def_const2();
     }
 
     if(token != tk_variavel && token != tk_var && token != tk_begin)
@@ -275,6 +271,8 @@ void variaveis()
 
         if(!fail){
             listas_de_ident();
+
+        if(!fail)
             fail = reconhece(tk_pontovirgula);
         }
     }
@@ -371,7 +369,7 @@ void def_listas_ident2()
     }
 
     else if(token == tk_real)
-            fail = reconhece(tk_real);
+        fail = reconhece(tk_real);
 
     if(token != tk_virgula && token != tk_pontovirgula)
     {
@@ -439,8 +437,13 @@ void bloco()
 
     if(token == tk_begin)
     {
-        variaveis();
-        comandos();
+        fail = reconhece(tk_begin);
+
+        if(!fail)
+            variaveis();
+
+        if(!fail)
+            comandos();
     }
 
     if(token != tk_ponto && token != tk_else && token != tk_pontovirgula)
@@ -504,6 +507,8 @@ void comando()
 
         if(!fail)
             lista_arg();
+
+        if(!fail)
             fail = reconhece(tk_fechaparenteses);
     }
 
@@ -516,6 +521,8 @@ void comando()
 
         if(!fail)
             lista_arg();
+
+        if(!fail)
             fail = reconhece(tk_fechaparenteses);
     }
 
@@ -525,10 +532,14 @@ void comando()
 
         if(!fail)
             expr_relacional();
+
+        if(!fail)
             fail = reconhece(tk_then);
 
         if(!fail)
             bloco();
+
+        if(!fail)
             else_opc();
     }
 
@@ -544,13 +555,17 @@ void comando()
 
         if(!fail)
             expressao();
+
+        if(!fail)
             fail = reconhece(tk_to);
 
         if(!fail)
             expressao();
+
+        if(!fail)
             fail = reconhece(tk_do);
 
-        if(fail)
+        if(!fail)
             bloco();
     }
 
@@ -722,7 +737,8 @@ void fator()
         if(!fail)
             expressao();
 
-        fail = reconhece(tk_fechaparenteses);
+        if(!fail)
+            fail = reconhece(tk_fechaparenteses);
     }
 
     if(token != tk_vezes && token != tk_divisao && token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then)
