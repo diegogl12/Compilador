@@ -92,7 +92,7 @@ void lista_arg2();
 
 int main()
 {
-    arquivo = fopen("codigo2.txt","r");
+    arquivo = fopen("codigo.txt","r");
 
     next_token();
     program();
@@ -107,33 +107,37 @@ int main()
 void program()
 {
     int fail = 0;
+
     if(token == tk_const || token == tk_var || token == tk_begin)
     {
+        printf("1\n");
         constantes();
+        printf("2\n");
         variaveis();
+        printf("3\n");
         bloco();
+        printf("4\n");
         fail = reconhece(tk_ponto);
+
         if(!fail)
-            reconhece(tk_EOF);
+           fail = reconhece(tk_EOF);
     }
 
-    if (token != tk_EOF )
+    if (token != tk_EOF)
     {
         erro(ERRO_sintatico);
         fail = 1;
     }
 
     if (fail)
-    {
-
         while(token != tk_EOF)
             next_token();
-    }
 }
 
 void constantes()
 {
     int fail = 0;
+
     if(token == tk_const)
     {
         fail = reconhece(tk_const);
@@ -160,239 +164,430 @@ void constantes()
 
 void lista_de_const()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
         def_const();
         lista_de_const2();
     }
-    else
+
+    if(token != tk_var && token != tk_begin)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail)
+        while(token != tk_begin && token != tk_var && token != tk_EOF)
+            next_token();
 }
 
 void lista_de_const2()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
        lista_de_const();
     }
+
     else if(token == tk_var || token == tk_begin);
-    else
+
+    if(token != tk_var && token != tk_begin)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail)
+        while(token != tk_begin && token != tk_var && token != tk_EOF)
+            next_token();
 }
 
 void def_const()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
-        reconhece(tk_variavel);
-        reconhece(tk_igual);
-        def_const2();
+        fail = reconhece(tk_variavel);
+
+        if(!fail)
+            fail = reconhece(tk_igual);
+
+            if(!fail)
+                def_const2();
     }
-    else
+
+    if(token != tk_variavel && token != tk_var && token != tk_begin)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail){
+
+        while(token != tk_variavel && token != tk_begin && token != tk_var && token != tk_EOF){
+            next_token();
+        }
+    }
 }
 
 void def_const2()
 {
+    int fail = 0;
+
     if(token == tk_numero)
     {
-        reconhece(tk_numero);
-        reconhece(tk_pontovirgula);
+        fail = reconhece(tk_numero);
+
+        if(!fail)
+            fail = reconhece(tk_pontovirgula);
     }
+
     else if(token == tk_numeroreal)
     {
-        reconhece(tk_numeroreal);
-        reconhece(tk_pontovirgula);
+        fail = reconhece(tk_numeroreal);
+
+        if(!fail)
+           fail = reconhece(tk_pontovirgula);
     }
-    else
+
+    if(token != tk_variavel && token != tk_begin && token != tk_var)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_variavel && token != tk_begin && token != tk_var && token != tk_EOF)
+            next_token();
 }
 
 void variaveis()
 {
+    int fail = 0;
+
     if(token == tk_var)
     {
-        reconhece(tk_var);
-        listas_de_ident();
-        reconhece(tk_pontovirgula);
+        fail = reconhece(tk_var);
+
+        if(!fail){
+            listas_de_ident();
+            fail = reconhece(tk_pontovirgula);
+        }
     }
 
     else if(token == tk_variavel || token == tk_begin || token == tk_end || token == tk_read || token == tk_write || token == tk_if || token == tk_for);
 
-    else
+    if(token != tk_variavel && token != tk_begin && token != tk_end && token != tk_read && token != tk_write && token != tk_if && token != tk_for)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail)
+        while(token != tk_variavel && token != tk_begin && token != tk_end && token != tk_read && token != tk_write && token != tk_if && token != tk_for && token != tk_EOF)
+            next_token();
 }
 
 void listas_de_ident()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
        def_listas_ident();
        listas_de_ident2();
     }
-    else
+
+    if (token != tk_pontovirgula)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail)
+        while(token != tk_pontovirgula && token != tk_EOF)
+            next_token();
 }
 
 void listas_de_ident2()
 {
+    int fail = 0;
+
     if(token == tk_virgula)
     {
-        reconhece(tk_virgula);
-        listas_de_ident();
+        fail = reconhece(tk_virgula);
+        if(!fail)
+            listas_de_ident();
     }
 
     else if(token == tk_pontovirgula);
 
-    else
+    if (token != tk_pontovirgula)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail)
+        while(token != tk_pontovirgula && token != tk_EOF)
+            next_token();
 }
 
 void def_listas_ident()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
         lista_de_ident();
-        reconhece(tk_doispontos);
-        def_listas_ident2();
+        fail = reconhece(tk_doispontos);
+
+        if(!fail)
+            def_listas_ident2();
     }
 
-    else
+    if (token != tk_virgula && token != tk_pontovirgula)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if (fail)
+        while(token != tk_virgula && token != tk_pontovirgula && token != tk_EOF)
+            next_token();
 }
 
 void def_listas_ident2()
 {
+    int fail = 0;
+
     if(token == tk_integer)
     {
-        reconhece(tk_integer);
+        fail = reconhece(tk_integer);
     }
 
     else if(token == tk_real)
+            fail = reconhece(tk_real);
+
+    if(token != tk_virgula && token != tk_pontovirgula)
     {
-        reconhece(tk_real);
+        erro(ERRO_sintatico);
+        fail = 1;
     }
 
-    else
-        erro(ERRO_sintatico);
+    if(fail)
+        while(token != tk_virgula && token != tk_pontovirgula && token != EOF)
+            next_token();
 }
 
 void lista_de_ident()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
-        reconhece(tk_variavel);
-        lista_de_ident2();
+        fail = reconhece(tk_variavel);
+
+        if(!fail)
+            lista_de_ident2();
     }
 
-    else
+    if(token != tk_doispontos)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_doispontos && token != tk_EOF)
+            next_token();
+
 }
 
 void lista_de_ident2()
 {
+    int fail = 0;
+
     if(token == tk_virgula)
     {
-        reconhece(tk_virgula);
-        reconhece(tk_variavel);
+        fail = reconhece(tk_virgula);
+
+        if(!fail)
+            fail = reconhece(tk_variavel);
     }
 
     else if(token == tk_doispontos);
 
-    else
+    if(token != tk_doispontos)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_doispontos && token != tk_EOF)
+            next_token();
 }
 
 void bloco()
 {
+    int fail = 0;
+
     if(token == tk_begin)
     {
         variaveis();
         comandos();
     }
 
-    else
+    if(token != tk_ponto && token != tk_else && token != tk_pontovirgula)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_ponto && token != tk_else && token != tk_pontovirgula && token != tk_EOF)
+            next_token();
 }
 
 void comandos()
 {
+    int fail = 0;
+
     if(token == tk_variavel || token == tk_read || token == tk_write || token == tk_if || token == tk_for)
     {
         comando();
-        reconhece(tk_pontovirgula);
-        comandos();
+        fail = reconhece(tk_pontovirgula);
+
+        if(!fail)
+            comandos();
     }
 
-    else if(token == tk_end);
+    else if(token == tk_end)
 
-    else
+    if(token != tk_end)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_end && token != tk_EOF)
+            next_token();
 }
 
 void comando()
 {
+    int fail = 0;
+
     if(token == tk_variavel)
     {
-        reconhece(tk_variavel);
-        reconhece(tk_atribuir);
-        expressao();
+        fail = reconhece(tk_variavel);
+
+        if(!fail)
+            fail = reconhece(tk_atribuir);
+
+        if(!fail)
+            expressao();
     }
 
     else if(token == tk_read)
     {
-        reconhece(tk_read);
-        reconhece(tk_abreparenteses);
-        lista_arg();
-        reconhece(tk_fechaparenteses);
+        fail = reconhece(tk_read);
+
+        if(!fail)
+            fail = reconhece(tk_abreparenteses);
+
+        if(!fail)
+            lista_arg();
+            fail = reconhece(tk_fechaparenteses);
     }
 
     else if(token == tk_write)
     {
-        reconhece(tk_write);
-        reconhece(tk_abreparenteses);
-        lista_arg();
-        reconhece(tk_fechaparenteses);
+        fail = reconhece(tk_write);
+
+        if(!fail)
+            fail = reconhece(tk_abreparenteses);
+
+        if(!fail)
+            lista_arg();
+            fail = reconhece(tk_fechaparenteses);
     }
 
     else if(token == tk_if)
     {
-        reconhece(tk_if);
-        expr_relacional();
-        reconhece(tk_then);
-        bloco();
-        else_opc();
+        fail = reconhece(tk_if);
+
+        if(!fail)
+            expr_relacional();
+            fail = reconhece(tk_then);
+
+        if(!fail)
+            bloco();
+            else_opc();
     }
 
     else if(token == tk_for)
     {
-        reconhece(tk_for);
-        reconhece(tk_variavel);
-        reconhece(tk_igual);
-        expressao();
-        reconhece(tk_to);
-        expressao();
-        reconhece(tk_do);
-        bloco();
+        fail = reconhece(tk_for);
+
+        if(!fail)
+            fail = reconhece(tk_variavel);
+
+        if(!fail)
+            fail = reconhece(tk_igual);
+
+        if(!fail)
+            expressao();
+            fail = reconhece(tk_to);
+
+        if(!fail)
+            expressao();
+            fail = reconhece(tk_do);
+
+        if(fail)
+            bloco();
     }
 
-    else
+    if(token != tk_pontovirgula)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
 
+    if(fail)
+        while(token != tk_pontovirgula && token != tk_EOF)
+            next_token();
 }
 
 void else_opc()
 {
+    int fail = 0;
+
     if(token == tk_else)
     {
-        reconhece(tk_else);
-        bloco();
+        fail = reconhece(tk_else);
+
+        if(!fail)
+            bloco();
     }
 
     else if(token == tk_pontovirgula);
 
-    else
+     if(token != tk_pontovirgula)
+    {
         erro(ERRO_sintatico);
+        fail = 1;
+    }
+
+    if(fail)
+        while(token != tk_pontovirgula && token != tk_EOF)
+            next_token();
 }
 
 void expressao()
@@ -436,8 +631,7 @@ void expressao2()
             expressao();
     }
 
-    else if(token == tk_igual || token == tk_diferente || token == tk_menorque || token == tk_maiorque || token == tk_menorigual || token == tk_maiorigual || token == tk_fechaparenteses || token == tk_pontovirgula || token
-             == tk_to || token == tk_do || token == tk_then);
+    else if(token == tk_igual || token == tk_diferente || token == tk_menorque || token == tk_maiorque || token == tk_menorigual || token == tk_maiorigual || token == tk_fechaparenteses || token == tk_pontovirgula || token == tk_to || token == tk_do || token == tk_then);
 
     if(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_menorque && token != tk_then)
     {
