@@ -10,9 +10,9 @@ begin
 
 	area := (altura * largura);
 
-	if (altura + 1) = 30 then
+	if (altura + 1) >= 30 then
 	begin
-		if area >= 0 then
+		if area = 0 then
 		begin
 			for cont = 0 to max do 
 			begin
