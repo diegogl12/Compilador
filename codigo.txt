@@ -25,7 +25,7 @@ begin
 		else
 		begin
 			write(quantidade);
-		end;
+		end; {$$$@@s}
 		
 	end;
 

@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
+#include <tuple>
+#include <vector>
+
+#include "analisador_semantico_escopo.cpp"
 
 #define ERRO_lexico -1
 #define ERRO_sintatico -2
@@ -194,7 +198,7 @@ void lista_de_const2()
         fail = 1;
     }
 
-    if (fail)
+    if(fail)
         while(token != tk_begin && token != tk_var && token != tk_EOF)
             next_token();
 }
@@ -205,6 +209,7 @@ void def_const()
 
     if(token == tk_variavel)
     {
+        inicia_id(lexema,'c');
         fail = reconhece(tk_variavel);
 
         if(!fail)
@@ -233,6 +238,8 @@ void def_const2()
     {
         fail = reconhece(tk_numero);
 
+        define_tipo('i');
+
         if(!fail)
             fail = reconhece(tk_pontovirgula);
     }
@@ -240,6 +247,8 @@ void def_const2()
     else if(token == tk_numeroreal)
     {
         fail = reconhece(tk_numeroreal);
+
+        define_tipo('f');
 
         if(!fail)
            fail = reconhece(tk_pontovirgula);
@@ -359,10 +368,19 @@ void def_listas_ident2()
     int fail = 0;
 
     if(token == tk_integer)
+    {
         fail = reconhece(tk_integer);
 
+        define_tipo('i');
+    }
+
     else if(token == tk_real)
+    {
         fail = reconhece(tk_real);
+
+        define_tipo('f');
+    }
+
 
     if(token != tk_virgula && token != tk_pontovirgula)
     {
@@ -381,6 +399,7 @@ void lista_de_ident()
 
     if(token == tk_variavel)
     {
+        inicia_id(lexema,'v');
         fail = reconhece(tk_variavel);
 
         if(!fail)
@@ -408,7 +427,10 @@ void lista_de_ident2()
         fail = reconhece(tk_virgula);
 
         if(!fail)
+        {
+            inicia_id(lexema,'v');
             fail = reconhece(tk_variavel);
+        }
     }
 
     else if(token == tk_doispontos);
@@ -432,6 +454,8 @@ void bloco()
     {
         fail = reconhece(tk_begin);
 
+        bloco_atual++;
+
         if(!fail)
             variaveis();
 
@@ -439,7 +463,12 @@ void bloco()
             comandos();
 
         if(!fail)
+        {
             fail = reconhece(tk_end);
+            bloco_atual--;
+        }
+
+        atualiza_situacao();
     }
 
     if(token != tk_ponto && token != tk_else && token != tk_pontovirgula)
