@@ -1,17 +1,32 @@
-begin
+const max = 100;
 
-	if a > b then {teste Diego top}
+var quantidade : integer , altura, largura : real;
+
 begin
-	if a > c then
+	var area : real,
+	cont : integer;
+	
+	read(altura, largura);
+
+	area := (altura * largura);
+
+	if (altura + 1) >= 30 then
 	begin
-		if a > c then
+		if area = 0 then
 		begin
-			write(a);
+			for cont = 0 to max do 
+			begin
+				quantidade := area * cont;
+				write(quantidade);
+				cont := cont + 1;
+			end;
+		end
+
+		else
+		begin
+			write(quantidade);
 		end;
-		{não tem else}
-	end
-	else
-	begin
-		write(b);
+		
 	end;
+
 end.
