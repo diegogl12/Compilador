@@ -454,7 +454,8 @@ void bloco()
     {
         fail = reconhece(tk_begin);
 
-        bloco_atual++;
+        if(!fail)
+            bloco_atual++;
 
         if(!fail)
             variaveis();
@@ -466,9 +467,8 @@ void bloco()
         {
             fail = reconhece(tk_end);
             bloco_atual--;
+            atualiza_situacao();
         }
-
-        atualiza_situacao();
     }
 
     if(token != tk_ponto && token != tk_else && token != tk_pontovirgula)
