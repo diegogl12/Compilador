@@ -38,11 +38,11 @@ bool teste_existencia(string nome)
 {
     for(vector< tuple<string,char,char,int,bool> > :: iterator it = analisador_escopo.begin(); it != analisador_escopo.end(); ++it)
     {
-        if(get<0>(*it) == nome && get<4>(*it) == true)
-            return false;
+        if(get<0>(*it) == nome)
+            return true;
     }
 
-    return true;
+    return false;
 }
 
 bool teste_escopo(string nome)

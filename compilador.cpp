@@ -8,6 +8,9 @@
 
 #define ERRO_lexico -1
 #define ERRO_sintatico -2
+#define ERRO_existencia -3
+#define ERRO_declaracao -4
+#define ERRO_escopo -5
 
 #define tk_numero 1
 #define tk_numeroreal 2
@@ -58,6 +61,8 @@ char reservadas[MAXreservadas][10] = {"end","begin","print","if","else","then","
 
 string lexema;
 int token;
+
+string lexema_anterior;
 
 int contador_linha=1;
 
@@ -206,11 +211,22 @@ void lista_de_const2()
 void def_const()
 {
     int fail = 0;
+    string aux_lexema;
 
     if(token == tk_variavel)
     {
-        inicia_id(lexema,'c');
+
+        aux_lexema = lexema; ///Referente ao teste de escopo
         fail = reconhece(tk_variavel);
+
+        if(!fail)///Referente ao teste de escopo
+        {
+            if(!teste_existencia(aux_lexema) || !teste_escopo(aux_lexema))
+                inicia_id(aux_lexema,'c');
+
+            else
+                erro(ERRO_declaracao);
+        }
 
         if(!fail)
             fail = reconhece(tk_igual);
@@ -238,7 +254,8 @@ void def_const2()
     {
         fail = reconhece(tk_numero);
 
-        define_tipo('i');
+        if(!fail)///Referente ao teste de escopo
+            define_tipo('i');
 
         if(!fail)
             fail = reconhece(tk_pontovirgula);
@@ -248,7 +265,8 @@ void def_const2()
     {
         fail = reconhece(tk_numeroreal);
 
-        define_tipo('f');
+        if(!fail)///Referente ao teste de escopo
+            define_tipo('f');
 
         if(!fail)
            fail = reconhece(tk_pontovirgula);
@@ -371,14 +389,16 @@ void def_listas_ident2()
     {
         fail = reconhece(tk_integer);
 
-        define_tipo('i');
+        if(!fail)///Referente ao teste de escopo
+            define_tipo('i');
     }
 
     else if(token == tk_real)
     {
         fail = reconhece(tk_real);
 
-        define_tipo('f');
+        if(!fail)///Referente ao teste de escopo
+            define_tipo('f');
     }
 
 
@@ -397,10 +417,21 @@ void lista_de_ident()
 {
     int fail = 0;
 
+    string aux_lexema;
+
     if(token == tk_variavel)
     {
-        inicia_id(lexema,'v');
+
+        aux_lexema = lexema;///Referente ao teste de escopo
         fail = reconhece(tk_variavel);
+
+        if(!fail)///Referente ao teste de escopo
+        {
+            if(!teste_existencia(aux_lexema) || !teste_escopo(aux_lexema))
+                inicia_id(aux_lexema,'v');
+            else
+                erro(ERRO_declaracao);
+        }
 
         if(!fail)
             lista_de_ident2();
@@ -422,14 +453,22 @@ void lista_de_ident2()
 {
     int fail = 0;
 
+    string aux_lexema;
+
     if(token == tk_virgula)
     {
         fail = reconhece(tk_virgula);
 
+        aux_lexema = lexema;///Referente ao teste de escopo
         if(!fail)
-        {
-            inicia_id(lexema,'v');
             fail = reconhece(tk_variavel);
+
+        if(!fail)///Referente ao teste de escopo
+        {
+            if(!teste_existencia(aux_lexema))
+                inicia_id(aux_lexema,'v');
+            else
+                erro(ERRO_declaracao);
         }
     }
 
@@ -454,7 +493,7 @@ void bloco()
     {
         fail = reconhece(tk_begin);
 
-        if(!fail)
+        if(!fail) ///Referente ao teste de escopo
             bloco_atual++;
 
         if(!fail)
@@ -466,8 +505,12 @@ void bloco()
         if(!fail)
         {
             fail = reconhece(tk_end);
-            bloco_atual--;
-            atualiza_situacao();
+
+            if(!fail) ///Referente ao teste de escopo
+            {
+                bloco_atual--;
+                atualiza_situacao();
+            }
         }
     }
 
@@ -512,9 +555,24 @@ void comando()
 {
     int fail = 0;
 
+    string aux_lexema;
+
     if(token == tk_variavel)
     {
+        aux_lexema = lexema;
         fail = reconhece(tk_variavel);
+
+        if(!fail)///Referente ao teste de escopo
+        {
+            if(teste_existencia(aux_lexema))
+            {
+                if(!teste_escopo(aux_lexema))
+                    erro(ERRO_escopo);
+            }
+
+            else
+                erro(ERRO_existencia);
+        }
 
         if(!fail)
             fail = reconhece(tk_atribuir);
@@ -573,7 +631,22 @@ void comando()
         fail = reconhece(tk_for);
 
         if(!fail)
+        {
+            aux_lexema = lexema;
             fail = reconhece(tk_variavel);
+        }
+
+        if(!fail)///Referente ao teste de escopo
+        {
+            if(teste_existencia(aux_lexema))
+            {
+                if(!teste_escopo(aux_lexema))
+                    erro(ERRO_escopo);
+            }
+
+            else
+                erro(ERRO_existencia);
+        }
 
         if(!fail)
             fail = reconhece(tk_igual);
@@ -746,8 +819,25 @@ void fator()
 {
     int fail = 0;
 
+    string aux_lexema;
+
     if(token == tk_variavel)
+    {
+        aux_lexema = lexema;///Referente ao teste de escopo
         fail = reconhece(tk_variavel);
+
+        if(!fail)///Referente ao teste de escopo
+        {
+            if(teste_existencia(aux_lexema))
+            {
+                if(!teste_escopo(aux_lexema))
+                    erro(ERRO_escopo);
+            }
+
+            else
+                erro(ERRO_existencia);
+        }
+    }
 
     else if(token == tk_numero)
         fail = reconhece(tk_numero);
@@ -835,10 +925,24 @@ void op_rel()
 void lista_arg()
 {
     int fail = 0;
+    string aux_lexema;
 
     if(token == tk_variavel)
     {
+        aux_lexema = lexema;///Referente ao teste de escopo
         fail = reconhece(tk_variavel);
+
+        if(!fail)///Referente ao teste de escopo
+        {
+            if(teste_existencia(aux_lexema))
+            {
+                if(!teste_escopo(aux_lexema))
+                    erro(ERRO_escopo);
+            }
+
+            else
+                erro(ERRO_existencia);
+        }
 
         if(!fail)
             lista_arg2();
@@ -1070,6 +1174,7 @@ int reconhece(int tk)
 
     else
     {
+        lexema_anterior = lexema;
         next_token();
         return 0;
     }
@@ -1082,9 +1187,14 @@ void erro(int sinal)
         case ERRO_lexico: cout << "::::: LINHA " << contador_linha << ": LEXEMA <" << lexema << "> NAO RECONHECIDO! \t:::::" << endl;
             break;
         case ERRO_sintatico: cout << "::::: LINHA " << contador_linha << ": SIMBOLO <" << lexema << "> NAO ESPERADO! \t:::::" << endl;
+            break;
+        case ERRO_declaracao: cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> JA DECLARADO EM UM ESCOPO ANTERIOR! \t:::::" << endl;
+            break;
+        case ERRO_existencia: cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> NUNCA DECLARADO! \t:::::" << endl;
+            break;
+        case ERRO_escopo:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> NAO ENCHERGADO POR ESTE ESCOPO! \t:::::" << endl;
+            break;
     }
 
     teste_erro = true;
-
-    next_token();
 }
