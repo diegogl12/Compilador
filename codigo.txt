@@ -3,7 +3,7 @@ const max = 100;
 var quantidade : integer , altura, largura : real;
 
 begin
-	var area : real,
+	var area: real,
 	cont : integer;
 	
 	read(altura, largura);
@@ -12,6 +12,7 @@ begin
 
 	if (altura + 1) >= 30 then
 	begin
+		var teste : real;
 		if area = 0 then
 		begin
 			for cont = 0 to max do 
@@ -25,8 +26,7 @@ begin
 		else
 		begin
 			write(quantidade);
-		end;
+		end; {$$$@@s}
 		
 	end;
-
 end.
