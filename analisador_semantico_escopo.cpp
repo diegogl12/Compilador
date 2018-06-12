@@ -8,6 +8,8 @@ using namespace std;
 
 vector< tuple<string,char,char,int,bool> > analisador_escopo; /// tuple< nome_variavel, var/constante, tipo_variavel, bloco, situação(true || false) >
 int bloco_atual = 0;
+char getTipo = '0';
+char getConst = '0';
 
 void inicia_id(string nome, char var_cons)
 {
@@ -24,7 +26,6 @@ void define_tipo(char tipo)
             get<2>(*it) = tipo;
     }
 }
-
 void atualiza_situacao()
 {
     for(vector< tuple<string,char,char,int,bool> > :: iterator it = analisador_escopo.begin(); it != analisador_escopo.end(); ++it)
@@ -56,3 +57,29 @@ bool teste_escopo(string nome)
     return false;
 }
 
+//analisador_semantico_tipo
+
+bool verifica_const(string nome)
+{
+    for(vector< tuple<string,char,char,int,bool> > :: iterator it = analisador_escopo.begin(); it != analisador_escopo.end(); ++it)
+    {
+        if(get<0>(*it) == nome && get<1>(*it) == getConst && get<4>(*it) == true)
+            return true;
+    }
+    return false;
+}
+
+bool teste_tipo(string nome)
+{
+    for(vector< tuple<string,char,char,int,bool> > :: iterator it = analisador_escopo.begin(); it != analisador_escopo.end(); ++it)
+    {
+        if(get<0>(*it) == nome && get<2>(*it) == getTipo && get<4>(*it) == true)
+        {
+            cout << "Tipo tabela: " << get<2>(*it) << endl;
+            return true;
+        }
+    }
+    cout << "Tipo get: " << getTipo << endl;
+
+    return false;
+}

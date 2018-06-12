@@ -11,6 +11,8 @@
 #define ERRO_existencia -3
 #define ERRO_declaracao -4
 #define ERRO_escopo -5
+#define ERRO_tipo -6
+#define ERRO_const -7
 
 #define tk_numero 1
 #define tk_numeroreal 2
@@ -222,7 +224,10 @@ void def_const()
         if(!fail)///Referente ao teste de escopo
         {
             if(!teste_existencia(aux_lexema) || !teste_escopo(aux_lexema))
+            {
                 inicia_id(aux_lexema,'c');
+                getConst = 'c'; /// referente ao teste de tipo constante/variavel
+            }
 
             else
                 erro(ERRO_declaracao);
@@ -255,7 +260,9 @@ void def_const2()
         fail = reconhece(tk_numero);
 
         if(!fail)///Referente ao teste de escopo
+        {
             define_tipo('i');
+        }
 
         if(!fail)
             fail = reconhece(tk_pontovirgula);
@@ -266,7 +273,9 @@ void def_const2()
         fail = reconhece(tk_numeroreal);
 
         if(!fail)///Referente ao teste de escopo
+        {
             define_tipo('f');
+        }
 
         if(!fail)
            fail = reconhece(tk_pontovirgula);
@@ -435,6 +444,7 @@ void lista_de_ident()
 
         if(!fail)
             lista_de_ident2();
+
     }
 
     if(token != tk_doispontos)
@@ -470,6 +480,7 @@ void lista_de_ident2()
             else
                 erro(ERRO_declaracao);
         }
+
     }
 
     else if(token == tk_doispontos);
@@ -568,10 +579,18 @@ void comando()
             {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
+
             }
 
             else
                 erro(ERRO_existencia);
+        }
+
+        if (!fail)/// Referente ao teste de tipo //TESTE DE ATRIBUIÇÃO SE CONSTANTE
+        {
+            if(verifica_const(aux_lexema))
+                erro(ERRO_const);
+
         }
 
         if(!fail)
@@ -642,10 +661,18 @@ void comando()
             {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
+
             }
 
             else
                 erro(ERRO_existencia);
+        }
+
+        if (!fail)/// Referente ao teste de tipo CONSTANTE/VARIAVEL
+        {
+            if(verifica_const(aux_lexema))
+                erro(ERRO_const);
+
         }
 
         if(!fail)
@@ -832,6 +859,7 @@ void fator()
             {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
+
             }
 
             else
@@ -915,7 +943,7 @@ void op_rel()
     {
         erro(ERRO_sintatico);
         fail = 1;
-    }
+}
 
     if(fail)
         while(token != tk_variavel && token != tk_numero && token != tk_numeroreal && token != tk_EOF)
@@ -938,6 +966,7 @@ void lista_arg()
             {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
+
             }
 
             else
@@ -1193,6 +1222,10 @@ void erro(int sinal)
         case ERRO_existencia: cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> NUNCA DECLARADO! \t:::::" << endl;
             break;
         case ERRO_escopo:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> NAO ENCHERGADO POR ESTE ESCOPO! \t:::::" << endl;
+            break;
+        case ERRO_tipo:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> IMCOMPATIVEL TIPO! \t:::::" << endl;
+            break;
+        case ERRO_const:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> IMPOSSIVEL ATRIBUIR VALOR A CONSTANTE! \t:::::" << endl;
             break;
     }
 

@@ -9,9 +9,9 @@ begin
 	read(altura, largura);
 
 	area := (altura * largura);
-
+	
 	if (altura + 1) >= 30 then
-	begin
+	begin			
 		var teste : real;
 		if area = 0 then
 		begin
