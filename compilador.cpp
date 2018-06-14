@@ -91,11 +91,11 @@ void bloco();
 void comando();
 void comandos();
 void else_opc();
-void expressao();
-void expressao2();
-void termo();
-void termo2();
-void fator();
+char expressao();
+char expressao2(char pTipo);
+char termo();
+char termo2(char pTipo);
+char fator();
 void expr_relacional();
 void op_rel();
 void lista_arg();
@@ -565,6 +565,7 @@ void comandos()
 void comando()
 {
     int fail = 0;
+    char tipo,aux_tipo;
 
     string aux_lexema;
 
@@ -576,28 +577,29 @@ void comando()
         if(!fail)///Referente ao teste de escopo
         {
             if(teste_existencia(aux_lexema))
-            {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
-
-            }
-
             else
                 erro(ERRO_existencia);
         }
 
-        if (!fail)/// Referente ao teste de tipo //TESTE DE ATRIBUIÇÃO SE CONSTANTE
+        if (!fail)///Referente ao teste de tipo //TESTE DE ATRIBUIÇÃO SE CONSTANTE
         {
             if(verifica_const(aux_lexema))
                 erro(ERRO_const);
-
         }
+
+        if(!fail)
+            tipo = get_tipo(aux_lexema);
 
         if(!fail)
             fail = reconhece(tk_atribuir);
 
         if(!fail)
-            expressao();
+            aux_tipo = expressao();
+
+        if(!fail)
+            tipo = compara_tipo(tipo,aux_tipo);
     }
 
     else if(token == tk_read)
@@ -661,19 +663,15 @@ void comando()
             {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
-
             }
 
             else
                 erro(ERRO_existencia);
         }
 
-        if (!fail)/// Referente ao teste de tipo CONSTANTE/VARIAVEL
-        {
-            if(verifica_const(aux_lexema))
-                erro(ERRO_const);
-
-        }
+        if(!fail)///Referente ao teste de tipo, precisa ser inteiro
+            if(!teste_tipo(aux_lexema,'i'))
+                erro(ERRO_tipo);
 
         if(!fail)
             fail = reconhece(tk_igual);
@@ -730,14 +728,19 @@ void else_opc()
             next_token();
 }
 
-void expressao()
+char expressao()
 {
     int fail = 0;
+    char tipo = '0';
 
     if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token == tk_abreparenteses)
     {
-       termo();
-       expressao2();
+        char aux1,aux2;
+        aux1 = termo();
+        aux2 = expressao2(aux1);
+
+       tipo = compara_tipo(aux1,aux2);
+
     }
 
     if(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then)
@@ -749,18 +752,24 @@ void expressao()
     if(fail)
         while(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then && token != tk_EOF)
             next_token();
+
+    return tipo;
 }
 
-void expressao2()
+char expressao2(char pTipo)
 {
     int fail = 0;
+    char tipo = '0';
 
     if(token == tk_soma)
     {
         fail = reconhece(tk_soma);
 
         if(!fail)
-            expressao();
+            tipo = expressao();
+
+        if(!fail)
+            tipo = compara_tipo(tipo,pTipo);
     }
 
     else if(token == tk_subtracao)
@@ -768,7 +777,10 @@ void expressao2()
         fail = reconhece(tk_subtracao);
 
         if(!fail)
-            expressao();
+            tipo = expressao();
+
+        if(!fail)
+            tipo = compara_tipo(tipo,pTipo);
     }
 
     else if(token == tk_igual || token == tk_diferente || token == tk_menorque || token == tk_maiorque || token == tk_menorigual || token == tk_maiorigual || token == tk_fechaparenteses || token == tk_pontovirgula || token == tk_to || token == tk_do || token == tk_then);
@@ -782,17 +794,23 @@ void expressao2()
     if(fail)
         while(token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then && token != tk_EOF)
             next_token();
+
+    return tipo;
 }
 
-void termo()
+char termo()
 {
     int fail = 0;
+    char tipo = '0';
 
-    if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token
-        == tk_abreparenteses)
+    if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token == tk_abreparenteses)
     {
-        fator();
-        termo2();
+        char aux1,aux2;
+
+        aux1 = fator();
+        aux2 = termo2(aux1);
+
+        tipo = compara_tipo(aux1,aux2);
     }
 
     if(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then)
@@ -805,29 +823,41 @@ void termo()
         while(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then && token != tk_EOF)
             next_token();
 
+    return tipo;
 }
 
-void termo2()
+char termo2(char pTipo)
 {
     int fail = 0;
+    char tipo = '0';
 
     if(token == tk_soma || token == tk_subtracao || token == tk_igual || token == tk_diferente || token == tk_menorque || token == tk_maiorque || token == tk_menorigual || token == tk_maiorigual || token == tk_fechaparenteses || token == tk_pontovirgula || token
              == tk_to || token == tk_do || token == tk_then);
 
     else if(token == tk_vezes)
     {
+        char aux;
+
         fail = reconhece(tk_vezes);
 
         if(!fail)
-            termo();
+            aux = termo();
+
+        if(!fail)
+            tipo = compara_tipo(pTipo,aux);
     }
 
     else if(token == tk_divisao)
     {
+        char aux;
+
         fail = reconhece(tk_divisao);
 
         if(!fail)
-            termo();
+            aux = termo();
+
+        if(!fail)
+            tipo = 'f';
     }
 
     if(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then)
@@ -840,11 +870,13 @@ void termo2()
         while(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then && token != tk_EOF)
             next_token();
 
+    return tipo;
 }
 
-void fator()
+char fator()
 {
     int fail = 0;
+    char tipo = '0';
 
     string aux_lexema;
 
@@ -859,26 +891,37 @@ void fator()
             {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
-
             }
 
             else
                 erro(ERRO_existencia);
         }
+
+        if(!fail)
+            tipo = get_tipo(aux_lexema);
     }
 
     else if(token == tk_numero)
+    {
         fail = reconhece(tk_numero);
 
+        if(!fail)
+            tipo = 'i';
+    }
     else if(token == tk_numeroreal)
+    {
         fail = reconhece(tk_numeroreal);
+
+        if(!fail)
+            tipo = 'f';
+    }
 
     else if(token == tk_abreparenteses)
     {
         fail = reconhece(tk_abreparenteses);
 
         if(!fail)
-            expressao();
+            tipo = expressao();
 
         if(!fail)
             fail = reconhece(tk_fechaparenteses);
@@ -893,6 +936,8 @@ void fator()
     if(fail)
         while(token != tk_vezes && token != tk_divisao && token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then && token != tk_EOF)
             next_token();
+
+    return tipo;
 }
 
 void expr_relacional ()
@@ -901,9 +946,15 @@ void expr_relacional ()
 
     if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token == tk_abreparenteses)
     {
-        expressao();
+        char tipo,aux1, aux2;
+        aux1 = expressao();
         op_rel();
-        expressao();
+        aux2 = expressao();
+
+        tipo = compara_tipo(aux1,aux2);
+
+        if(aux1 == '0' || aux2 == '0' || tipo == 'I')
+            erro(ERRO_tipo);
     }
 
     if(token != tk_then)
@@ -1223,7 +1274,7 @@ void erro(int sinal)
             break;
         case ERRO_escopo:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> NAO ENCHERGADO POR ESTE ESCOPO! \t:::::" << endl;
             break;
-        case ERRO_tipo:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> IMCOMPATIVEL TIPO! \t:::::" << endl;
+        case ERRO_tipo:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> INCOMPATIVEL TIPO! \t:::::" << endl;
             break;
         case ERRO_const:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> IMPOSSIVEL ATRIBUIR VALOR A CONSTANTE! \t:::::" << endl;
             break;

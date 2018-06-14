@@ -8,7 +8,6 @@ using namespace std;
 
 vector< tuple<string,char,char,int,bool> > analisador_escopo; /// tuple< nome_variavel, var/constante, tipo_variavel, bloco, situação(true || false) >
 int bloco_atual = 0;
-char getTipo = '0';
 char getConst = '0';
 
 void inicia_id(string nome, char var_cons)
@@ -69,17 +68,40 @@ bool verifica_const(string nome)
     return false;
 }
 
-bool teste_tipo(string nome)
+char get_tipo(string nome)
 {
     for(vector< tuple<string,char,char,int,bool> > :: iterator it = analisador_escopo.begin(); it != analisador_escopo.end(); ++it)
     {
-        if(get<0>(*it) == nome && get<2>(*it) == getTipo && get<4>(*it) == true)
+        if(get<0>(*it) == nome && get<4>(*it) == true)
         {
-            cout << "Tipo tabela: " << get<2>(*it) << endl;
+            return get<2>(*it);
+        }
+    }
+
+    return '0';
+}
+
+bool teste_tipo(string nome, char tipo)
+{
+    for(vector< tuple<string,char,char,int,bool> > :: iterator it = analisador_escopo.begin(); it != analisador_escopo.end(); ++it)
+    {
+        if(get<0>(*it) == nome && get<2>(*it) == tipo && get<4>(*it) == true)
+        {
             return true;
         }
     }
-    cout << "Tipo get: " << getTipo << endl;
 
     return false;
+}
+
+char compara_tipo(char tipo1, char tipo2)
+{
+    if(tipo1 == 'i' && tipo2 == 'i')
+        return 'i';
+    else if((tipo1 == 'i' && tipo2 == 'f') || (tipo1 == 'f' && tipo2 == 'i'))
+        return 'I'; ///TIPO RETORNA É INTEIRO, PORÉM TEM UM FLOAT NO MEIO. DARÁ WARNING
+    else if(tipo1 == '0' || tipo2 == '0')
+        return (tipo1 == '0')? tipo2 : tipo1;
+    else
+        return 'f';
 }
