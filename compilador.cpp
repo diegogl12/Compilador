@@ -13,6 +13,7 @@
 #define ERRO_escopo -5
 #define ERRO_tipo -6
 #define ERRO_const -7
+#define ERRO_readConst -8
 
 #define tk_numero 1
 #define tk_numeroreal 2
@@ -69,10 +70,12 @@ string lexema_anterior;
 int contador_linha=1;
 
 bool teste_erro = false;
+bool teste_warning = false;
 
 void next_token();
 int reconhece(int tk);
 void erro(int sinal);
+void warning(char c);
 
 void program();
 void constantes();
@@ -108,7 +111,7 @@ int main()
     next_token();
     program();
 
-    if(!teste_erro)
+    if(!teste_erro && !teste_warning)
         cout << "\t=== Compilou sem erros ===" << endl;
 
     fclose(arquivo);
@@ -577,8 +580,11 @@ void comando()
         if(!fail)///Referente ao teste de escopo
         {
             if(teste_existencia(aux_lexema))
+            {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
+            }
+
             else
                 erro(ERRO_existencia);
         }
@@ -599,7 +605,14 @@ void comando()
             aux_tipo = expressao();
 
         if(!fail)
+        {
             tipo = compara_tipo(tipo,aux_tipo);
+
+            if (tipo == 'I')
+                erro(ERRO_tipo);
+            else if (tipo == 'F');
+                warning(tipo);
+        }
     }
 
     else if(token == tk_read)
@@ -953,7 +966,7 @@ void expr_relacional ()
 
         tipo = compara_tipo(aux1,aux2);
 
-        if(aux1 == '0' || aux2 == '0' || tipo == 'I')
+        if(aux1 == '0' || aux2 == '0' || tipo == 'I' || tipo == 'F')
             erro(ERRO_tipo);
     }
 
@@ -1023,6 +1036,11 @@ void lista_arg()
             else
                 erro(ERRO_existencia);
         }
+
+        if(!fail)
+
+            if(verifica_const(aux_lexema))
+                erro(ERRO_readConst);
 
         if(!fail)
             lista_arg2();
@@ -1278,7 +1296,16 @@ void erro(int sinal)
             break;
         case ERRO_const:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> IMPOSSIVEL ATRIBUIR VALOR A CONSTANTE! \t:::::" << endl;
             break;
+        case ERRO_readConst:cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> IMPOSSIVEL LER CONSTANTE! \t:::::" << endl;
+            break;
     }
 
     teste_erro = true;
+}
+
+void warning(char c)
+{
+    if(c == 'F')
+        cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> CONFLITO DE TIPO! \t:::::" << endl;
+    teste_warning = true;
 }
