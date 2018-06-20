@@ -98,10 +98,8 @@ char compara_tipo(char tipo1, char tipo2)
 {
     if(tipo1 == 'i' && tipo2 == 'i')
         return 'i';
-    else if(tipo1 == 'i' && tipo2 == 'f')
+    else if(((tipo1 == 'i' || tipo1  == 'I') && tipo2 == 'f') || (tipo1 = 'f' && (tipo2 == 'i' || tipo2  == 'I')))
         return 'I'; ///SE UM INTEIRO RECEBE FLOAT DARÁ ERRO WARNING
-    else if (tipo1 == 'f' && tipo2 == 'i')
-        return 'F'; ///SE UM FLOAT RECEBE INTEIRO DARÁ WARNING
     else if(tipo1 == '0' || tipo2 == '0')
         return (tipo1 == '0')? tipo2 : tipo1;
     else

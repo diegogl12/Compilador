@@ -604,14 +604,12 @@ void comando()
         if(!fail)
             aux_tipo = expressao();
 
-        if(!fail)
+        if(!fail) ///Referente ao analisador de TIPO
         {
-            tipo = compara_tipo(tipo,aux_tipo);
-
-            if (tipo == 'I')
-                erro(ERRO_tipo);
-            else if (tipo == 'F');
+            if(tipo == 'f' &&  (aux_tipo == 'i' || aux_tipo == 'I'))
                 warning(tipo);
+            else if(tipo == 'i' && aux_tipo == 'f')
+                erro(ERRO_tipo);
         }
     }
 
@@ -781,8 +779,16 @@ char expressao2(char pTipo)
         if(!fail)
             tipo = expressao();
 
-        if(!fail)
+        if(!fail)///Referente a analisador de TIPO
+        {
             tipo = compara_tipo(tipo,pTipo);
+
+            if(tipo == 'I')
+                warning(tipo);
+        }
+
+
+
     }
 
     else if(token == tk_subtracao)
@@ -857,7 +863,13 @@ char termo2(char pTipo)
             aux = termo();
 
         if(!fail)
+        {
             tipo = compara_tipo(pTipo,aux);
+
+            if(tipo == 'I')
+                warning(tipo);
+        }
+
     }
 
     else if(token == tk_divisao)
@@ -870,7 +882,14 @@ char termo2(char pTipo)
             aux = termo();
 
         if(!fail)
+        {
+            tipo = compara_tipo(tipo,pTipo);
+
+            if(tipo == 'I')
+                warning(tipo);
+
             tipo = 'f';
+        }
     }
 
     if(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then)
@@ -1306,6 +1325,6 @@ void erro(int sinal)
 void warning(char c)
 {
     if(c == 'F')
-        cout << "::::: LINHA " << contador_linha <<  ": IDENTIFICADOR <" << lexema_anterior << "> CONFLITO DE TIPO! \t:::::" << endl;
+        cout << "::::: LINHA " << contador_linha <<  ": [WARNING] : IDENTIFICADOR <" << lexema_anterior << "> CONFLITO DE TIPO! \t:::::" << endl;
     teste_warning = true;
 }
