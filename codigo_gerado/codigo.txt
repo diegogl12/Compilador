@@ -1,22 +1,22 @@
 #define max 100
 {
-	read( altura, largura);
-	area := (altura * largura );
-	if (quantidade + 1 )>= 30 then
+	scanf( altura, largura);
+	area = (altura * largura );
+	if( (quantidade + 1 )>= 30 )
 	{
-		if cont = 0 then
+		if( cont = 0 )
 		{
-			for cont = 0 to max do
+			for(cont =0 ; cont < max ; cont++)
 			{
-				quantidade := area * cont ;
-				write(quantidade);
-				cont := cont + 1 ;
+				quantidade = area * cont ;
+				printf(quantidade);
+				cont = cont + 1 ;
 			}
 ;
 		}
 		else
 		{
-			write(quantidade);
+			printf(quantidade);
 		}
 ;
 	}

@@ -626,6 +626,7 @@ void comando()
 {
     int fail = 0;
     char tipo,aux_tipo;
+    string aux_var;
 
     string aux_lexema;
 
@@ -666,7 +667,7 @@ void comando()
             tipo = get_tipo(aux_lexema);
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"= ",lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_atribuir);
@@ -691,7 +692,7 @@ void comando()
             for(int i=0;i<contador_alt;i++)
                 fprintf(saida,"\t");
 
-            fprintf(saida,"%s",lexema.c_str());
+            fprintf(saida,"scanf",lexema.c_str());
 
         }
 
@@ -721,7 +722,7 @@ void comando()
             for(int i=0;i<contador_alt;i++)
                 fprintf(saida,"\t");
 
-            fprintf(saida,"%s",lexema.c_str());
+            fprintf(saida,"printf",lexema.c_str());
         }
 
         fail = reconhece(tk_write);
@@ -750,7 +751,7 @@ void comando()
             for(int i=0;i<contador_alt;i++)
                 fprintf(saida,"\t");
 
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"%s( ",lexema.c_str());
         }
 
         fail = reconhece(tk_if);
@@ -759,7 +760,7 @@ void comando()
             expr_relacional();
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s\n",lexema.c_str());
+            fprintf(saida,")\n",lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_then);
@@ -778,7 +779,7 @@ void comando()
             for(int i=0;i<contador_alt;i++)
                 fprintf(saida,"\t");
 
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"%s(",lexema.c_str());
         }
 
         fail = reconhece(tk_for);
@@ -788,7 +789,10 @@ void comando()
             aux_lexema = lexema;
 
             if(etapa == 's') ///referente a etapa de sintese
+            {
                 fprintf(saida,"%s ",lexema.c_str());
+                aux_var = lexema;
+            }
 
             fail = reconhece(tk_variavel);
         }
@@ -819,7 +823,7 @@ void comando()
             expressao();
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"; %s < ",aux_lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_to);
@@ -828,7 +832,7 @@ void comando()
             expressao();
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s\n",lexema.c_str());
+            fprintf(saida,"; %s++)\n",aux_lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_do);
@@ -1178,22 +1182,57 @@ void op_rel()
         fprintf(saida,"%s ",lexema.c_str());
 
     if(token == tk_igual)
+    {
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"== ",lexema.c_str());
+
         fail = reconhece(tk_igual);
+    }
+
 
     else if(token == tk_diferente)
+    {
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"!= ",lexema.c_str());
+
         fail = reconhece(tk_diferente);
+    }
 
     else if(token == tk_menorque)
+    {
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"%s ",lexema.c_str());
+
         fail = reconhece(tk_menorque);
+    }
+
 
     else if(token == tk_maiorque)
+    {
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"%s ",lexema.c_str());
+
         fail = reconhece(tk_maiorque);
+    }
+
 
     else if(token == tk_menorigual)
+    {
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"%s ",lexema.c_str());
+
         fail = reconhece(tk_menorigual);
+    }
+
 
     else if(token == tk_maiorigual)
+    {
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"%s ",lexema.c_str());
+
         fail = reconhece(tk_maiorigual);
+    }
+
 
     if(token != tk_variavel && token != tk_numero && token != tk_numeroreal)
     {
