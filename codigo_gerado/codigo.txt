@@ -1,18 +1,22 @@
 #define max 100
 {
-	read( );
-	area := (altura * largura ) ;
-	if (quantidade + 1 ) >= 30 then 	{
-		if cont = 0 then 		{
-			for cont = 0 to max do 			{
+	read( altura, largura);
+	area := (altura * largura );
+	if (quantidade + 1 )>= 30 then
+	{
+		if cont = 0 then
+		{
+			for cont = 0 to max do
+			{
 				quantidade := area * cont ;
-				write();
+				write(quantidade);
 				cont := cont + 1 ;
 			}
 ;
 		}
-		else 		{
-			write();
+		else
+		{
+			write(quantidade);
 		}
 ;
 	}

@@ -633,14 +633,14 @@ void comando()
     {
         aux_lexema = lexema;
 
-            if(etapa == 's') ///referente a etapa de sintese
-            {
-                for(int i=0;i<contador_alt;i++)
-                    fprintf(saida,"\t");
+        if(etapa == 's') ///referente a etapa de sintese
+        {
+            for(int i=0;i<contador_alt;i++)
+                fprintf(saida,"\t");
 
-                fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"%s ",lexema.c_str());
 
-            }
+        }
 
         fail = reconhece(tk_variavel);
 
@@ -743,7 +743,7 @@ void comando()
             fail = reconhece(tk_fechaparenteses);
     }
 
-    else if(token == tk_if)
+    else if(token == tk_if) /// IF
     {
         if(etapa == 's') ///referente a etapa de sintese
         {
@@ -759,7 +759,7 @@ void comando()
             expr_relacional();
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"%s\n",lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_then);
@@ -771,7 +771,7 @@ void comando()
             else_opc();
     }
 
-    else if(token == tk_for)
+    else if(token == tk_for) ///FOR
     {
         if(etapa == 's') ///referente a etapa de sintese
         {
@@ -828,7 +828,7 @@ void comando()
             expressao();
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"%s\n",lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_do);
@@ -859,7 +859,7 @@ void else_opc()
             for(int i=0;i<contador_alt;i++)
                 fprintf(saida,"\t");
 
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"%s\n",lexema.c_str());
         }
 
         fail = reconhece(tk_else);
@@ -1214,6 +1214,10 @@ void lista_arg()
     if(token == tk_variavel)
     {
         aux_lexema = lexema;///Referente ao teste de escopo
+
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"%s",lexema.c_str());
+
         fail = reconhece(tk_variavel);
 
         if(!fail)///Referente ao teste de escopo
@@ -1254,6 +1258,10 @@ void lista_arg2()
     int fail = 0;
     if(token == tk_virgula)
     {
+
+        if(etapa == 's') ///referente a etapa de sintese
+            fprintf(saida,"%s ",lexema.c_str());
+
         fail = reconhece(tk_virgula);
 
         if(!fail)
