@@ -747,10 +747,11 @@ char expressao()
     if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token == tk_abreparenteses)
     {
         char aux1,aux2;
+
         aux1 = termo();
         aux2 = expressao2(aux1);
 
-       tipo = compara_tipo(aux1,aux2);
+        tipo = compara_tipo(aux1,aux2);
 
     }
 
@@ -781,14 +782,12 @@ char expressao2(char pTipo)
 
         if(!fail)///Referente a analisador de TIPO
         {
+
             tipo = compara_tipo(tipo,pTipo);
 
             if(tipo == 'I')
                 warning(tipo);
         }
-
-
-
     }
 
     else if(token == tk_subtracao)
@@ -824,12 +823,14 @@ char termo()
 
     if(token == tk_variavel || token == tk_numero || token == tk_numeroreal || token == tk_abreparenteses)
     {
-        char aux1,aux2;
+        char aux,aux2;
 
-        aux1 = fator();
-        aux2 = termo2(aux1);
+        aux = fator();
+        aux2 = termo2(aux);
 
-        tipo = compara_tipo(aux1,aux2);
+        tipo = compara_tipo(aux,aux2);
+
+        cout << contador_linha << aux << aux2<<tipo<<endl;
     }
 
     if(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then)

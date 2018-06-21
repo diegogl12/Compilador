@@ -12,7 +12,8 @@ begin
 	begin
 		var
 		e,f:real;
-		e:=c+10;
+
+		e:= c + 10;
 		f:=x;
 	end;
 	write(f);
