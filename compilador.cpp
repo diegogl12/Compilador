@@ -75,7 +75,7 @@ bool teste_warning = false;
 void next_token();
 int reconhece(int tk);
 void erro(int sinal);
-void warning(char c);
+void warning();
 
 void program();
 void constantes();
@@ -111,7 +111,7 @@ int main()
     next_token();
     program();
 
-    if(!teste_erro && !teste_warning)
+    if(!teste_erro)
         cout << "\t=== Compilou sem erros ===" << endl;
 
     fclose(arquivo);
@@ -607,7 +607,7 @@ void comando()
         if(!fail) ///Referente ao analisador de TIPO
         {
             if(tipo == 'f' &&  (aux_tipo == 'i' || aux_tipo == 'I'))
-                warning(tipo);
+                warning();
             else if(tipo == 'i' && aux_tipo == 'f')
                 erro(ERRO_tipo);
         }
@@ -786,7 +786,7 @@ char expressao2(char pTipo)
             tipo = compara_tipo(tipo,pTipo);
 
             if(tipo == 'I')
-                warning(tipo);
+                warning();
         }
     }
 
@@ -829,8 +829,6 @@ char termo()
         aux2 = termo2(aux);
 
         tipo = compara_tipo(aux,aux2);
-
-        cout << contador_linha << aux << aux2<<tipo<<endl;
     }
 
     if(token != tk_soma && token != tk_subtracao && token != tk_to && token != tk_do && token != tk_fechaparenteses && token != tk_pontovirgula && token != tk_igual && token != tk_diferente && token != tk_menorque && token != tk_maiorque && token != tk_menorigual && token != tk_maiorigual && token != tk_then)
@@ -868,7 +866,7 @@ char termo2(char pTipo)
             tipo = compara_tipo(pTipo,aux);
 
             if(tipo == 'I')
-                warning(tipo);
+                warning();
         }
 
     }
@@ -887,7 +885,7 @@ char termo2(char pTipo)
             tipo = compara_tipo(tipo,pTipo);
 
             if(tipo == 'I')
-                warning(tipo);
+                warning();
 
             tipo = 'f';
         }
@@ -1323,9 +1321,8 @@ void erro(int sinal)
     teste_erro = true;
 }
 
-void warning(char c)
+void warning()
 {
-    if(c == 'F')
-        cout << "::::: LINHA " << contador_linha <<  ": [WARNING] : IDENTIFICADOR <" << lexema_anterior << "> CONFLITO DE TIPO! \t:::::" << endl;
+    cout << "::::: LINHA " << contador_linha <<  ": [WARNING] : CONFLITO DE TIPO NA OPERACAO! \t:::::" << endl;
     teste_warning = true;
 }

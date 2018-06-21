@@ -96,34 +96,22 @@ bool teste_tipo(string nome, char tipo)
 
 char compara_tipo(char tipo1, char tipo2)
 {
-   //cout << tipo1<<' '<<tipo2<< endl;
     if((tipo1 == 'i' || tipo1 == 'I') && (tipo2 == 'i') || (tipo2 == 'I'))
     {
         if(tipo1 == 'I' || tipo2 == 'I')
             return 'I';
         return 'i';
     }
-    else if(((tipo1 == 'i' || tipo1  == 'I') && tipo2 == 'f') || (tipo1 = 'f' && (tipo2 == 'i' || tipo2  == 'I')))
-    {
+    else if(((tipo1 == 'i' || tipo1  == 'I') && tipo2 == 'f') || (tipo1 == 'f' && (tipo2 == 'i' || tipo2  == 'I')))
         return 'I'; ///SE UM INTEIRO RECEBE FLOAT DARÁ ERRO WARNING
-    }
     else if(tipo1 == '0' || tipo2 == '0')
     {
-
-        if(tipo1 == '0')
-        {
-            return tipo2;
-        }
-
-        else
-        {//cout << tipo1<<endl;
+        if(tipo2 == '0')
             return tipo1;
-        }
-
+        else
+            return tipo2;
     }
     else
-    {
         return 'f';
-    }
 
 }
