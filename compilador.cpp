@@ -1544,6 +1544,8 @@ void erro(int sinal)
 
 void warning()
 {
-    cout << "::::: LINHA " << contador_linha <<  ": [WARNING] : CONFLITO DE TIPO NA OPERACAO! \t:::::" << endl;
+    if(etapa == 'a')
+        cout << "::::: LINHA " << contador_linha <<  ": [WARNING] : CONFLITO DE TIPO NA OPERACAO! \t:::::" << endl;
+
     teste_warning = true;
 }
