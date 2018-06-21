@@ -115,3 +115,8 @@ char compara_tipo(char tipo1, char tipo2)
         return 'f';
 
 }
+
+void apagar_tabela()
+{
+    analisador_escopo.clear();
+}
