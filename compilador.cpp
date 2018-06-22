@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "analisador_semantico_escopo.cpp"
+#include "sintese.cpp"
 
 #define ERRO_lexico -1
 #define ERRO_sintatico -2
@@ -121,7 +122,7 @@ int main()
 
         etapa = 's';                                         ///ETAPA DE GERACAO DE CODIGO
         arquivo = fopen("codigos_linguagem/codigo.txt","r");
-        saida = fopen("codigo_gerado/codigo.txt","w");
+        saida = fopen("codigo_gerado/codigo.c","w");
 
         apagar_tabela(); ///APAGA A TABELA DE IDENTIFICADORES PARA SER GERADA NOVAMENTE
 
@@ -146,6 +147,10 @@ void program()
     {
         constantes();
         variaveis();
+
+        if(etapa == 's')
+            fprintf(saida,"int main(void)\n");
+
         bloco();
         fail = reconhece(tk_ponto);
 
@@ -434,6 +439,29 @@ void def_listas_ident2()
 
         if(!fail)///Referente ao teste de escopo
             define_tipo('i');
+
+        if(etapa == 's')
+        {
+            for(int i = 0; i<contador_alt;  i++)
+                fprintf(saida,"\t");
+
+            fprintf(saida,"int ");
+
+            for(int i=0; i<tamanho_vetor();i++)
+            {
+                fprintf(saida,"%s",declaracao_id[i].c_str());
+
+                if(i<tamanho_vetor()-1)
+                    fprintf(saida,", ");
+            }
+
+
+            apaga_vetor_declaracao();
+
+            fprintf(saida,";\n");
+        }
+
+
     }
 
     else if(token == tk_real)
@@ -442,6 +470,27 @@ void def_listas_ident2()
 
         if(!fail)///Referente ao teste de escopo
             define_tipo('f');
+
+        if(etapa == 's')
+        {
+            for(int i = 0; i<contador_alt;  i++)
+                fprintf(saida,"\t");
+
+            fprintf(saida,"float ");
+
+            for(int i=0; i<tamanho_vetor();i++)
+            {
+                fprintf(saida,"%s",declaracao_id[i].c_str());
+
+                if(i<tamanho_vetor()-1)
+                    fprintf(saida,", ");
+            }
+
+
+            apaga_vetor_declaracao();
+
+            fprintf(saida,";\n");
+        }
     }
 
 
@@ -464,6 +513,9 @@ void lista_de_ident()
 
     if(token == tk_variavel)
     {
+
+        if(etapa = 's')
+            declarar_id(lexema);
 
         aux_lexema = lexema;///Referente ao teste de escopo
         fail = reconhece(tk_variavel);
@@ -502,6 +554,9 @@ void lista_de_ident2()
     if(token == tk_virgula)
     {
         fail = reconhece(tk_virgula);
+
+        if(etapa = 's')
+            declarar_id(lexema);
 
         aux_lexema = lexema;///Referente ao teste de escopo
         if(!fail)
@@ -566,6 +621,9 @@ void bloco()
                 for(int i=0;i<contador_alt;i++)
                     fprintf(saida,"\t");
 
+                if(!contador_alt)
+                    fprintf(saida,"\treturn 0;\n");
+
                 fprintf(saida,"}\n");
 
             }
@@ -599,9 +657,6 @@ void comandos()
     if(token == tk_variavel || token == tk_read || token == tk_write || token == tk_if || token == tk_for)
     {
         comando();
-
-        if(etapa == 's') ///referente a etapa de sintese
-                fprintf(saida,";\n");
 
         fail = reconhece(tk_pontovirgula);
 
@@ -682,6 +737,9 @@ void comando()
             else if(tipo == 'i' && aux_tipo == 'f')
                 erro(ERRO_tipo);
         }
+
+        if(etapa == 's') ///referente a etapa de sintese
+                fprintf(saida,";\n");
     }
 
     else if(token == tk_read) ///READ
@@ -713,6 +771,9 @@ void comando()
 
         if(!fail)
             fail = reconhece(tk_fechaparenteses);
+
+        if(etapa == 's') ///referente a etapa de sintese
+                fprintf(saida,";\n");
     }
 
     else if(token == tk_write) ///WRITE
@@ -742,6 +803,9 @@ void comando()
 
         if(!fail)
             fail = reconhece(tk_fechaparenteses);
+
+        if(etapa == 's') ///referente a etapa de sintese
+                fprintf(saida,";\n");
     }
 
     else if(token == tk_if) /// IF
@@ -1177,9 +1241,6 @@ void expr_relacional ()
 void op_rel()
 {
     int fail = 0;
-
-    if(etapa == 's') ///referente a etapa de sintese
-        fprintf(saida,"%s ",lexema.c_str());
 
     if(token == tk_igual)
     {
