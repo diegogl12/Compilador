@@ -19,6 +19,7 @@ begin
 			begin
 				quantidade := area * cont;
 				write(quantidade);
+				write(altura);
 				cont := cont + 1;
 			end;
 		end

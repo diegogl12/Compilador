@@ -763,6 +763,14 @@ void comando()
         if(!fail)
             fail = reconhece(tk_abreparenteses);
 
+        if(etapa == 's') ///referente a etapa de sintese
+        {
+            if(get_tipo(lexema) == 'i')
+               fprintf(saida,"\"%s:\ %%d\",",lexema.c_str());
+            else
+               fprintf(saida,"\"%s:\ %%f\",",lexema.c_str());
+        }
+
         if(!fail)
             lista_arg();
 
@@ -793,6 +801,14 @@ void comando()
 
         if(!fail)
             fail = reconhece(tk_abreparenteses);
+
+        if(etapa == 's') ///referente a etapa de sintese
+        {
+            if(get_tipo(lexema) == 'i')
+               fprintf(saida,"\"%s:\ %%d\",",lexema.c_str());
+            else
+               fprintf(saida,"\"%s:\ %%f\",",lexema.c_str());
+        }
 
         if(!fail)
             lista_arg();
@@ -1313,6 +1329,9 @@ void lista_arg()
 
     if(token == tk_variavel)
     {
+        if(etapa = 's')
+            declarar_id(lexema);
+
         aux_lexema = lexema;///Referente ao teste de escopo
 
         if(etapa == 's') ///referente a etapa de sintese
@@ -1363,6 +1382,17 @@ void lista_arg2()
             fprintf(saida,"%s ",lexema.c_str());
 
         fail = reconhece(tk_virgula);
+
+        if(etapa == 's') ///referente a etapa de sintese
+        {
+            if(etapa = 's')
+                declarar_id(lexema);
+
+            if(get_tipo(lexema) == 'i')
+               fprintf(saida,",%s:\ %%d\",",lexema.c_str());
+            else
+               fprintf(saida,"\"%s:\ %%f\",",lexema.c_str());
+        }
 
         if(!fail)
             lista_arg();
