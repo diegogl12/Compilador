@@ -1,4 +1,4 @@
-const max = 100;
+const max = 3;
 
 var quantidade : integer , altura, largura : real;
 
@@ -10,23 +10,18 @@ begin
 
 	area := (altura * largura);
 	
-	if (quantidade + 1) >= 30 then
+	if (area+0) <= 100 then
 	begin			
-		var teste : real;
-		if cont = 0 then
+		for cont = 0 to max do 
 		begin
-			for cont = 0 to max do 
-			begin
-				quantidade := area * cont;
-				write(quantidade);
-				cont := cont + 1;
-			end;
-		end
+			quantidade := area * cont;
+			write(quantidade);
+			cont := cont + 1;
+		end;
+	end
 
 		else
 		begin
 			write(quantidade);
 		end; {$$$@@s}
-		
-	end;
 end.

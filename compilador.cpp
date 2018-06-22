@@ -109,7 +109,7 @@ void lista_arg2();
 
 int main()
 {
-    arquivo = fopen("codigos_linguagem/codigo.txt","r");
+    arquivo = fopen("codigos_linguagem/codigo.comp","r");
 
     next_token();
     program();
@@ -121,7 +121,7 @@ int main()
         cout << "\t=== Compilou sem erros ===" << endl;
 
         etapa = 's';                                         ///ETAPA DE GERACAO DE CODIGO
-        arquivo = fopen("codigos_linguagem/codigo.txt","r");
+        arquivo = fopen("codigos_linguagem/codigo.comp","r");
         saida = fopen("codigo_gerado/codigo.c","w");
 
         apagar_tabela(); ///APAGA A TABELA DE IDENTIFICADORES PARA SER GERADA NOVAMENTE
@@ -514,7 +514,7 @@ void lista_de_ident()
     if(token == tk_variavel)
     {
 
-        if(etapa = 's')
+        if(etapa == 's')
             declarar_id(lexema);
 
         aux_lexema = lexema;///Referente ao teste de escopo
@@ -555,7 +555,7 @@ void lista_de_ident2()
     {
         fail = reconhece(tk_virgula);
 
-        if(etapa = 's')
+        if(etapa == 's')
             declarar_id(lexema);
 
         aux_lexema = lexema;///Referente ao teste de escopo
@@ -758,7 +758,7 @@ void comando()
 
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s ",lexema.c_str());
+            fprintf(saida,"%s",lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_abreparenteses);
@@ -767,7 +767,30 @@ void comando()
             lista_arg();
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s",lexema.c_str());
+        {
+            fprintf(saida,"\"");
+
+            for(int i=0; i<tamanho_vetor();i++)
+            {
+                 fprintf(saida,"%%%c",declaracao_tipo[i]);
+                 if(i < tamanho_vetor()-1)
+                    fprintf(saida," ");
+            }
+
+            fprintf(saida,"\",");
+
+            for(int i=0; i<tamanho_vetor();i++)
+            {
+                 fprintf(saida,"&%s",declaracao_id[i].c_str());
+                 if(i < tamanho_vetor()-1)
+                    fprintf(saida,", ");
+            }
+
+            fprintf(saida,"%s",lexema.c_str()); ///printa fecha parenteses
+
+            apaga_vetor_declaracao();
+        }
+
 
         if(!fail)
             fail = reconhece(tk_fechaparenteses);
@@ -797,9 +820,29 @@ void comando()
         if(!fail)
             lista_arg();
 
-
         if(etapa == 's') ///referente a etapa de sintese
+        {
+            fprintf(saida,"\"");
+
+            for(int i=0; i<tamanho_vetor();i++)
+            {
+                 fprintf(saida,"%%%c\\n",declaracao_tipo[i]);
+                 if(i < tamanho_vetor()-1)
+                    fprintf(saida," ");
+            }
+
+            fprintf(saida,"\",");
+
+            for(int i=0; i<tamanho_vetor();i++)
+            {
+                 fprintf(saida,"%s",declaracao_id[i].c_str());
+                 if(i < tamanho_vetor()-1)
+                    fprintf(saida,", ");
+            }
+
+            apaga_vetor_declaracao();
             fprintf(saida,"%s",lexema.c_str());
+        }
 
         if(!fail)
             fail = reconhece(tk_fechaparenteses);
@@ -896,7 +939,7 @@ void comando()
             expressao();
 
         if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"; %s++)\n",aux_lexema.c_str());
+            fprintf(saida,";)\n",aux_lexema.c_str());
 
         if(!fail)
             fail = reconhece(tk_do);
@@ -1223,7 +1266,7 @@ void expr_relacional ()
 
         tipo = compara_tipo(aux1,aux2);
 
-        if(aux1 == '0' || aux2 == '0' || tipo == 'I' || tipo == 'F')
+        if(aux1 == 'f' && aux2 != 'f' || aux1 != 'f' && aux2 == 'f')
             erro(ERRO_tipo);
     }
 
@@ -1315,8 +1358,11 @@ void lista_arg()
     {
         aux_lexema = lexema;///Referente ao teste de escopo
 
-        if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s",lexema.c_str());
+        if(etapa == 's')///referente a etapa de sintese
+        {
+            declarar_id(lexema);
+            declarar_tipo(get_tipo(lexema));
+        }
 
         fail = reconhece(tk_variavel);
 
@@ -1326,7 +1372,6 @@ void lista_arg()
             {
                 if(!teste_escopo(aux_lexema))
                     erro(ERRO_escopo);
-
             }
 
             else
@@ -1358,10 +1403,6 @@ void lista_arg2()
     int fail = 0;
     if(token == tk_virgula)
     {
-
-        if(etapa == 's') ///referente a etapa de sintese
-            fprintf(saida,"%s ",lexema.c_str());
-
         fail = reconhece(tk_virgula);
 
         if(!fail)

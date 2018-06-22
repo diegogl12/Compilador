@@ -1,28 +1,24 @@
-#define max 100
+#define max 3
 int quantidade;
 float altura, largura;
 int main(void)
 {
 	float area;
 	int cont;
-	scanf( altura, largura);
+	scanf("%f %f",&altura, &largura);
 	area = (altura * largura );
-	if( (quantidade + 1 )>= 30 )
+	if( (area + 0 )<= 100 )
 	{
-		float teste;
-		if( cont == 0 )
+		for(cont = 0 ; cont < max ;)
 		{
-			for(cont = 0 ; cont < max ; cont++)
-			{
-				quantidade = area * cont ;
-				printf(quantidade);
-				cont = cont + 1 ;
-			}
+			quantidade = area * cont ;
+			printf("%i\n",quantidade);
+			cont = cont + 1 ;
 		}
-		else
-		{
-			printf(quantidade);
-		}
+	}
+	else
+	{
+		printf("%i\n",quantidade);
 	}
 	return 0;
 }
